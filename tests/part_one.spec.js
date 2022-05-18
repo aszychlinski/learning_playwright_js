@@ -114,5 +114,41 @@ test('4h', async ({page}) => {
     }
 });
 
+test('6', async ({page}) => {
+    // "Automatyzujemy stronę Datepicker - wpisujemy date i sprawdzamy czy została wybrana poprawna"
+    // w tym datepickerze nie da rady pisać z palca... musiałem wymyślić coś innego do zrobienia
 
+    const date = new Date()
+    const today = date.getDate()
+    const tomorrow = today + 1
 
+    await page.goto('https://webdriveruniversity.com/Datepicker/index.html');
+    await page.locator('div input').click();
+    await expect(page.locator('.today.day')).toHaveText(today.toString());
+    await page.locator('.today + td').click();
+    await page.locator('div input').click();
+    await expect(page.locator('.active.day')).toHaveText(tomorrow.toString());
+
+});
+
+test('7', async ({page}) => {
+    // Automatyzujemy stronę Autocomplete TextField - wpisujemy 3 pierwsze znaki i wybieramy 2 element z listy podpowiadanej np. ('chi')
+
+    await page.goto('https://webdriveruniversity.com/Autocomplete-TextField/autocomplete-textfield.html');
+    await page.locator('#myInput').fill('Chi');
+    await page.locator('#myInputautocomplete-list > div:first-of-type').click();
+    await expect(page.locator('#myInput')).toHaveJSProperty('value', 'Chicken');
+
+});
+
+test('8', async ({page}) => {
+    // Automatyzujemy stronę Ajax-Loader - czekamy aż strona się załaduje(bez statycznych waitow) i klikamy guzik
+
+    await page.goto('https://webdriveruniversity.com/Ajax-Loader/index.html');
+    await page.waitForSelector('#loader', {state: 'hidden', timeout: 15000});
+    await page.waitForSelector('div#myDiv', {state: 'visible', timeout: 5000});
+    await page.locator('#myDiv p').click();
+    await page.waitForSelector('#myModalClick', {state: 'visible', timeout: 5000});
+    await expect(page.locator('.modal-title')).toHaveText('Well Done For Waiting....!!!');
+
+});
